@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>小二加油</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./lib/app.min.css">
+    <style>
+    body{
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+       font-smoothing: antialiased;
+    }
+    .input-group {
+        position: relative;
+        display: table;
+        border-collapse: separate;
+    }
+    
+    .input-group .app-input {
+        position: relative;
+        z-index: 2;
+        float: left;
+        width: 100%;
+        margin-bottom: 0;
+        display: table-cell;
+    }
+    
+    .input-group-addon {
+        display: table-cell;
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
+        font-weight: normal;
+        line-height: 1;
+        text-align: center;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="app-page" data-page="home">
+        <div class="app-topbar">
+            <div class="app-title">小二加油</div>
+        </div>
+        <form name="OrderForm" class="app-content">
+            <div class="app-section">
+                <div class="input-group">
+                    <span class="input-group-addon">test</span>
+                    <input class="app-input" type="text" name="name" placeholder="请填写客户名称"></input>
+                </div>
+            </div>
+            <div class="app-section">
+                <div class="input-group">
+                    <span class="input-group-addon">test</span>
+                    <input class="app-input" type="text" name="tel" placeholder="请填写联系电话"></input>
+                </div>
+            </div>
+            <div class="app-section">
+                <div class="input-group">
+                    <span class="input-group-addon">test</span>
+                    <input class="app-input" type="text" name="time" placeholder="请填写配送时间"></input>
+                </div>
+            </div>
+            <div class="app-section">
+                <div class="input-group">
+                    <span class="input-group-addon">test</span>
+                    <input class="app-input" type="text" name="place" placeholder="请填写配送地点"></input>
+                </div>
+            </div>
+            <div style="display: table;width: 100%;height: 16%;" class="">
+                <div style="text-align: center;vertical-align: middle; width: 50%;display:table-cell;">
+                    <div style="margin-top: 2%;">4.0 元/升</div>
+                    <input type="hidden" name="rate" value="4"></input>
+                    <div style="margin-top: 2%;">车用国五0#柴油</div>
+                    <div style="margin-top: 2%;"><img src="sdsd.png"></div>
+                </div>
+                <div style="text-align: center;vertical-align: middle;width: 50%;display:table-cell;">
+                    <div style="margin-top: 2%;">4.2 元/升</div>
+                    <div style="margin-top: 2%;">国标-10#柴油</div>
+                    <div style="margin-top: 2%;"></div>
+                </div>
+            </div>
+            <div class="app-section">
+                <div class="input-group">
+                    <span class="input-group-addon">test</span>
+                    <input class="app-input" style="width: 100%;padding: 0px 5px;" type="text" name="volume"></input><span class="input-group-addon" style="width: 80%;text-align: left;">升</span>
+                </div>
+            </div>
+            <div>
+                <div style="text-align: center;margin: 0 15%;">
+                    <label>合计</label><span id="sum" style="padding: 0 2%;">3222</span>元
+                    <input type="hidden" name="sum" value=""></input>
+                </div>
+                <div style="line-height:45px ;height:45px;text-align: center;margin: 0 15%;">
+                    <label>小二加油为您节省约</label><span id="saving" style="padding: 0 1%;">800</span>元 !
+                    <input type="hidden" name="saving" value=""></input>
+                </div>
+            </div>
+            <div style="width: 60%;margin: 0 20%; padding: 0px;">
+                <div class="app-section">
+                    <div id="subBtn" class="app-button" style="color: black; width: 50%;padding: 0 25%;border-radius: 5px;">立即提交</div>
+                </div>
+        </form>
+        </div>
+        <div class="app-page" data-page="page2">
+            <div class="app-topbar">
+                <div class="app-button left" data-back data-autotitle></div>
+                <div class="app-title">提交成功</div>
+            </div>
+            <div class="app-content">
+                Page 2 is lonely
+            </div>
+        </div>
+        <script src="lib/zepto.js"></script>
+        <script src="lib/app.min.js"></script>
+        <script>
+        function validateErrorDialog (text) {
+            App.dialog({
+                title: '验证信息',
+                text: text,
+                okButton: '确认'
+                }, function(tryAgain) {
+                if (tryAgain) {
+                  return false;
+                }
+            });
+        }
+
+
+        App.controller('home', function(page) {
+            $(page).find('#subBtn').on('click', function(event) {
+                event.preventDefault();
+                console.log('test');
+                var orderForm = $('form[name="OrderForm"]')[0];
+                var propsMust = {
+                    'name': "请填写客户名称",
+                    'tel': "请填写联系电话",
+                    'time': "请填写配送时间",
+                    'place': "请填写配送地点",
+                    'volume': "请填写购油量(只能填写数字)",
+                    'rate': "油品单价出现问题",
+                    'sum': "总价有误",
+                    'saving': "节约错误"
+                };
+
+                for (var k in propsMust) {
+                    var value = orderForm[k].value;
+                    if (value == null || value == "") {
+                        validateErrorDialog(propsMust[k]);
+                        return;
+                    }else {
+                        switch(k) {
+                             case 'volume':
+                               if (Number.isNaN(Number(value))) {
+                                 validateErrorDialog(propsMust[k]);
+                               }
+                               return;
+                           }   
+                    }
+                }
+
+                alert('sdsd');
+                $.post('/create', $(orderForm).serialize(), function(response) {
+
+                    App.load('page2');
+                });
+
+            })
+        });
+
+        App.controller('page2', function(page) {
+            // put stuff here
+        });
+
+        try {
+            App.restore();
+        } catch (err) {
+            App.load('home');
+        }
+        </script>
+</body>
+
+</html>
